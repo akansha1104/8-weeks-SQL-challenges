@@ -2,14 +2,14 @@
 
 
 
-![](https://8weeksqlchallenge.com/images/case-study-designs/1.png)
+<img align= "center" alt="coding" width= "400" src="https://8weeksqlchallenge.com/images/case-study-designs/1.png">
 
 
 
 # 📚 Table Of Contents
 
-* [Intoduction]()
-* [ Problem Statement]()
+* [Intoduction](https://github.com/akansha1104/8-weeks-SQL-challenges/edit/main/Danny's%20diner%20/readme.md#introduction)
+* [ Problem Statement](https://github.com/akansha1104/8-weeks-SQL-challenges/edit/main/Danny's%20diner%20/readme.md#problem-statement)
 * [Dataset used]()
 * [Case Study Questions solutions]()
 
