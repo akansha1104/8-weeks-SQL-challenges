@@ -20,7 +20,7 @@ Thanks [Data With Danny ](https://www.datawithdanny.com/) for such amazing and i
 
 ##  🍣 Case Study #1 : Danny's Diner
 
-![](https://8weeksqlchallenge.com/images/case-study-designs/1.png)
+<img align= "left" alt= "coding" width= "400" src="https://8weeksqlchallenge.com/images/case-study-designs/1.png">
 
 
 ### Business Task
