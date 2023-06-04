@@ -13,6 +13,8 @@ Thanks [Data With Danny ](https://www.datawithdanny.com/) for such amazing and i
 * [ Case Study #1 : Danny's Diner]()
 * [ Case Study #2 : Pizza Runner]()
 * [ Case Study #3 : Foodie - fi]()
+* [ Case Study #4 : Data Bank ]()
+* [ Case Study #5 : Data Mart ]()
 
 
 
