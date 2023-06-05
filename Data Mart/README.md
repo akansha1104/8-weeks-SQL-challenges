@@ -2,26 +2,26 @@
 
 
 
+<img align= "center" alt= "logo" width= "400" src= "https://8weeksqlchallenge.com/images/case-study-designs/5.png">
 
-![logo](https://img.freepik.com/free-vector/hand-drawn-shopping-center-youtube-channel-art_23-2149337475.jpg?size=626&ext=jpg&uid=R104561754&ga=GA1.2.2040524197.1685204678&semt=ais)
+
+*  Note that all the information regarding dataset and case study is sourced from [here](https://8weeksqlchallenge.com/case-study-5/)
 
 
-## 📚 Table Of Contents
 
-* [Introduction]()
-* [Problem Statement]()
+
+# 📚 Table Of Contents
+
+* [Business Task]()
 * [Dataset Used]()
-* [Case Study Questions]()
+* [Case Study Questions and Solutions]()
 
 
 
- ## Introduction
+ ## 📩 Business Task
  
  Danny embarked upon a new venture of online supermrket that specialises in  fresh produce and is named as DATA MART. After running international operations for his online supermarket, Danny is asking for  support to analyse his sales performance. 
 In June 2020 - large scale supply changes were made at Data Mart. All Data Mart products now use sustainable packaging methods in every single step from the farm all the way to the customer.
-
-
-## Problem Statement
 
 Danny needs  help to quantify the impact of this change on the sales performance for Data Mart and it’s separate business areas.
 
@@ -33,7 +33,7 @@ The key business question to be answered are following--
 
 
 
-## Dataset Used
+## 🗞️ Dataset Used
 For this case study there is only a single table: data_mart.weekly_sales
 
 The columns are pretty self-explanatory based on the column names but here are some further details about the dataset:
@@ -44,10 +44,10 @@ The columns are pretty self-explanatory based on the column names but here are s
 * `Transactions` is the count of unique purchases made through Data Mart and `sales` is the actual dollar amount of purchases.
 
 
-## Case Study Questions
+## ✏️ Case Study Questions and solutions
 
 
-## 🧼 1. Data Cleansing Steps
+# 🧴🧼 A. Data Cleansing Steps
 In a single query, perform the following operations and generate a new table in the data_mart schema named clean_weekly_sales:
 
 Convert the week_date to a DATE format
@@ -80,21 +80,277 @@ Ensure all `null string` values with an "unknown" string value in the original `
 Generate a new `avg_transaction` column as the sales value divided by transactions rounded to 2 decimal places for each record.
 
 
+## solution
 
-## : 🔎2. Data Exploration
+Let's construct the structure of `clean_weekly_sales` table and lay out the actions to be taken.
+
+| Column Name | Action to take |
+|-------------|-----------------|
+|week_date | Convert to `DATE` using `DATE()` |
+|week_number*|	Extract number of week using `WEEK` |
+|month_number*|	Extract number of month using `MONTH`|
+|calendar_year*|	Extract year using `YEAR`|
+|region|	No changes|
+|platform|	No changes|
+|segment|	No changes|
+|age_band*|	Use `CASE` statement and apply conditional logic on `segment` with 1 = `Young Adults`, 2 =` Middle Aged`, 3/4 =` Retirees` and null = `Unknown`|
+|demographic*|	Use `CASE` `WHEN` and apply conditional logic on based on `segment`, C = `Couples` and F = `Families` and null =` Unknown`|
+|transactions	|No changes|
+|avg_transaction*|	Divide `sales` with `transactions` and round up to 2 decimal places|
+|sales|	No changes|
+
+```sql
+DROP TABLE IF EXISTS clean_weekly_sales:
+CREATE TEMP TABLE 'clean_weekly_sales' AS (
+  SELECT 
+        DATE(week_date) AS date ,
+        WEEK(week_date) AS week_number ,
+        MONTH(week_date) AS month_number ,
+        YEAR(week_date)  IN (2018, 2019, 2020) AS calender_year,
+        region ,
+        platform ,
+        segment ,
+        CASE 
+            WHEN RIGHT(segment , 1) = 1 THEN 'Young Adults'
+            WHEN RIGHT(segment , 1) = 2 THEN 'middle Aged'
+            WHEN RIGHT(segment , 1) IN (3 , 4) THEN 'Retirees'
+            ELSE 'unknown' 
+        END) AS Age-band ,
+        CASE LEFT(segment , 1)
+            WHEN 'C' THEN 'couples'
+            WHEN 'F' THEN 'Families'
+            ELSE 'unknown'
+        END) AS demographic ,
+        transactions, 
+        ROUND( sales / transactions , 2 ) AS avg_transaction ,
+        sales
+   FROM  data_mart.weekly_sales
+);
+```
+ 
+
+
+
+## 🛍️ B. Data Exploration
 Q1. What day of the week is used for each week_date value?
+
+```sql
+SELECT DAYNAME( DISTINCT week_date) AS week_day
+FROM clean_weekly_sales;
+```
+
+## answer
+| week_day|
+|---------|
+| monday |
+
+
+
 Q2. What range of week numbers are missing from the dataset?
+
+* First, generate a range of week numbers for the entire year from 1st week to the 52nd week using the GENERATE_SERIES() function.
+* Then, perform a LEFT JOIN with the clean_weekly_sales. Ensure that the join sequence is the CTE followed by the clean_weekly_sales as reversing the sequence      would result in null results (unless you opt for a RIGHT JOIN instead!).
+
+```sql 
+WITH cte AS (
+  SELECT GENERATE_SERIES(1,52) AS week_number
+)
+  
+SELECT DISTINCT w.week_number
+FROM cte  w
+LEFT JOIN clean_weekly_sales s
+ON w.week_number = s.week_number
+WHERE s.week_number IS NULL; -- Filter to identify the missing week numbers where the values are `NULL`.
+```
+Answer:
+*I'm posting only the results of 5 rows here. Ensure that you have retrieved 28 rows!
+
+
+|week_number|
+|-----------|
+|1|
+|2|
+|3|
+|37|
+|41|
+
+### * The dataset is missing a total of 28 `week_number` records.
+
+
 Q3. How many total transactions were there for each year in the dataset?
+
+```sql
+SELECT calendar_year, 
+       SUM(transactions) AS total_transactions
+ FROM clean_weekly_sales
+ GROUP BY calendar_year
+ ORDER BY calendar_year;
+``` 
+Answer:
+
+|calendar_year|	total_transactions|
+|------------|-------------|
+|2018	|346406460|
+|2019|	365639285|
+|2020|	375813651|
+
+
 Q4. What is the total sales for each region for each month?
+
+```sql
+SELECT month_number, 
+       region, 
+      SUM(sales) AS total_sales
+FROM clean_weekly_sales
+GROUP BY month_number, region
+ORDER BY month_number, region;
+```
+Answer:
+
+I'm only showing the results for the month of March.
+
+|month_number|	region|	total_sales|
+|---------|---------|----------|
+|3|	AFRICA|	567767480|
+|3	|ASIA	|529770793|
+|3	|CANADA|	144634329|
+|3	|EUROPE|	35337093|
+|3|	OCEANIA	|783282888|
+|3|	SOUTH AMERICA	|71023109|
+|3	|USA	|225353043|
+
 Q5. What is the total count of transactions for each platform
+
+```sql
+SELECT platform, 
+       SUM(transactions) AS total_transactions
+FROM clean_weekly_sales
+GROUP BY platform;
+```
+
+Answer:
+
+|platform|	total_transactions|
+|---------|---------|
+|Retail|	1081934227|
+|Shopify|	5925169|
+
+
 Q6. What is the percentage of sales for Retail vs Shopify for each month?
+```sql
+WITH monthly_transactions AS (
+  SELECT 
+    calendar_year, 
+    month_number, 
+    platform, 
+    SUM(sales) AS monthly_sales
+  FROM clean_weekly_sales
+  GROUP BY calendar_year, month_number, platform
+)
+
+SELECT 
+  calendar_year, 
+  month_number, 
+  ROUND(100 * MAX 
+        (CASE 
+         WHEN platform = 'Retail' THEN monthly_sales ELSE NULL END) 
+         / SUM(monthly_sales),2 ) AS retail_percentage,
+  ROUND(100 * MAX 
+        (CASE 
+         WHEN platform = 'Shopify' THEN monthly_sales ELSE NULL END)
+         / SUM(monthly_sales),2 ) AS shopify_percentage
+FROM monthly_transactions
+GROUP BY calendar_year, month_number
+ORDER BY calendar_year, month_number;
+```
+Answer:
+
+*Although I am only displaying the rows for the year 2018, please note that the overall results consist of 20 rows.
+
+|calendar_year|	month_number|	retail_percentage|	shopify_percentage|
+|---------|----------|---------|-----------|
+|2018|	3|	97.92|	2.08|
+|2018|	4	|97.93|	2.07|
+|2018|	5	|97.73|	2.27|
+|2018	|6|	97.76|	2.24|
+|2018	|7	|97.75|	2.25|
+|2018	|8	|97.71	|2.29|
+|2018|	9	|97.68|	2.32|
+
+
 Q7.What is the percentage of sales by demographic for each year in the dataset?
+
+```sql
+WITH cte AS (
+              SELECT calender_year , 
+              demographic,
+              SUM( sales) AS yearly_sales
+              FROM clean_weekly_sales
+              GROUP BY calender_year;
+)
+   SELECT calendr_year,
+          ROUND( 100* yearly_sales / SUM( yearly_sales) , 2 ) OVER ( PARTITION BY demographic) AS pct_sales_by_demographic
+   FROM cte;
+   ```
+   
+              
+             
 Q8.Which age_band and demographic values contribute the most to Retail sales?
+
+```sql
+SELECT age_band, 
+       demographic, 
+       SUM(sales) AS retail_sales,
+       ROUND(100 * 
+            SUM(sales) / SUM(SUM(sales)) OVER (),1) AS contribution_percentage
+FROM clean_weekly_sales
+WHERE platform = 'Retail'
+GROUP BY age_band, demographic
+ORDER BY retail_sales DESC;
+```
+Answer:
+
+|age_band	|demographic|	retail_sales|	contribution_percentage|
+|-------|---------|--------|--------|
+|unknown|	unknown|	16067285533|	40.5|
+|Retirees|	Families|	6634686916|	16.7|
+|Retirees|	Couples|	6370580014	|16.1|
+|Middle Aged|	Families	|4354091554|	11.0|
+|Young Adults|	Couples	|2602922797	|6.6|
+|Middle Aged|	Couples	|1854160330|	4.7|
+|Young Adults|	Families|	1770889293	|4.5|
+
+The majority of the highest retail sales accounting for `41%` are contributed by `unknown` age_band and demographic. This is followed by retired families at `16.73% `and retired couples at` 16.07%`.
+
 Q9.Can we use the avg_transaction column to find the average transaction size for each year for Retail vs Shopify? If not - how would you calculate it instead?
 
+```sql
+SELECT  calendar_year, 
+        platform, 
+        ROUND(AVG(avg_transaction),0) AS avg_transaction_row, 
+        SUM(sales) / SUM(transactions) AS avg_transaction_group
+FROM clean_weekly_sales
+GROUP BY calendar_year, platform
+ORDER BY calendar_year, platform;
+```
+Answer:
+
+|calendar_year|	platform	|avg_transaction_row	|avg_transaction_group|
+|2018|	Retail|	43	|36|
+|2018	|Shopify|	188	|192|
+|2019|	Retail|	42|	36|
+|2019|	Shopify|	178|	183|
+|2020|	Retail|	41|	36|
+|2020|	Shopify|	175	|179|
+
+The difference between `avg_transaction_row` and `avg_transaction_group` is as follows:
+
+avg_transaction_row calculates the average transaction size by dividing the sales of each row by the number of transactions in that row.
+On the other hand, avg_transaction_group calculates the average transaction size by dividing the total sales for the entire dataset by the total number of transactions.
+For finding the average transaction size for each year by platform accurately, it is recommended to use `avg_transaction_group`.
 
 
-## 💡 3. Before & After Analysis
+## 💡 C. Before & After Analysis
 This technique is usually used when we inspect an important event and want to inspect the impact before and after a certain point in time.
 
 Taking the week_date value of `2020-06-15` as the baseline week where the Data Mart sustainable packaging changes came into effect.
@@ -109,7 +365,7 @@ Using this analysis approach - answer the following questions:
 
 
 
-## 🎁 4. Bonus Question
+## 🎁 D. Bonus Question
 Which areas of the business have the highest negative impact in sales metrics performance in 2020 for the 12 week before and after period?
 
 `region`
