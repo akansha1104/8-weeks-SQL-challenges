@@ -12,9 +12,9 @@
 
 # 📚 Table Of Contents
 
-* [Business Task]()
-* [Dataset Used]()
-* [Case Study Questions and Solutions]()
+* [Business Task](https://github.com/akansha1104/8-weeks-SQL-challenges/tree/main/Data%20Mart#-business-task)
+* [Dataset Used](https://github.com/akansha1104/8-weeks-SQL-challenges/tree/main/Data%20Mart#%EF%B8%8F-dataset-used)
+* [Case Study Questions and Solutions](https://github.com/akansha1104/8-weeks-SQL-challenges/tree/main/Data%20Mart#-a-data-cleansing-steps)
 
 
 
