@@ -346,7 +346,8 @@ The difference between `avg_transaction_row` and `avg_transaction_group` is as f
 avg_transaction_row calculates the average transaction size by dividing the sales of each row by the number of transactions in that row.
 On the other hand, avg_transaction_group calculates the average transaction size by dividing the total sales for the entire dataset by the total number of transactions.
 For finding the average transaction size for each year by platform accurately, it is recommended to use `avg_transaction_group`.
--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+------
 
 ## 💡 C. Before & After Analysis
 This technique is usually used when we inspect an important event and want to inspect the impact before and after a certain point in time.
