@@ -404,6 +404,7 @@ WITH cte1 AS (
 |-26884188|	-1.15|
 
 Since the implementation of new sustainable packaging practices , there has been a decrease in sales amounting to $26,884,188 reflecting a negative change by 1.15%. Introducing new packaging not always guarantee a positive impact as customers may not recognise the products on shelves in supermarkets due to change in packaging.
+
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------                      
 2. What about the entire 12 weeks before and after? 
 In this question we can apply similar approach as in the earlier question. Here instead of 4 weeks before and after, we have to calculate sales for 12 weeks before and after.
@@ -437,6 +438,7 @@ WITH cte1 AS (
 |-152325394	|-2.14|
 
 It seems like sales have further declined now at negative 2.14% !! This sustainable packaging idea doesnt sounds good for datamart customers and Danny too!!
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 3 How do the sale metrics for these 2 periods before and after compare with the previous years in 2018 and 2019?
 
@@ -532,6 +534,7 @@ Answer:
 There was a fair bit of percentage differences in all 3 years. However, now when you compare the worst year to their best year in 2018, the sales percentage difference is even more stark at a difference of 3.77% (1.63% + 2.14%).
 
 When comparing the sales performance across all three years, there were noticeable variations in the percentage differences. However, the most significant contrast emerges when comparing the worst-performing year in 2020 to the best-performing year in 2018.
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## 🎁 D. Bonus Question
