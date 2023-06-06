@@ -20,13 +20,5 @@ Thanks [Data With Danny ](https://www.datawithdanny.com/) for such amazing and i
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-##  🍣 Case Study #1 : Danny's Diner
+## Give a 🌟 if you appreciate my work..!!
 
-<img align= "left" alt= "coding" width= "400" src="https://8weeksqlchallenge.com/images/case-study-designs/1.png">
-
-
-### Business Task
-
-Danny wants to use the data to answer a few simple questions about his customers, especially about their visiting patterns, how much money they’ve spent and also which menu items are their favourite.
-
-View my solution [here]()
