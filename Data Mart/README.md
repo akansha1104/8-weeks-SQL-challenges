@@ -46,7 +46,7 @@ The columns are pretty self-explanatory based on the column names but here are s
 
 ## ✏️ Case Study Questions and solutions
 
-*Note that all the queries are done on `MYSQL`.
+* Note that all the queries are done on `MYSQL`.
 
 
 ## 🧴🧼 A. Data Cleansing Steps
