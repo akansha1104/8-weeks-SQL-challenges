@@ -20,10 +20,10 @@
 
  ## 📩 Business Task
  
- Danny embarked upon a new venture of online supermrket that specialises in  fresh produce and is named as DATA MART. After running international operations for his online supermarket, Danny is asking for  support to analyse his sales performance. 
+ Danny embarked upon a new venture of online supermarket that specialises in  fresh produce and is named as DATA MART. After running international operations for his online supermarket, Danny is asking for support to analyse his sales performance. 
 In June 2020 - large scale supply changes were made at Data Mart. All Data Mart products now use sustainable packaging methods in every single step from the farm all the way to the customer.
 
-Danny needs  help to quantify the impact of this change on the sales performance for Data Mart and it’s separate business areas.
+Danny needs help to quantify the impact of this change on the sales performance for Data Mart and it’s separate business areas.
 
 The key business question to be answered are following--
 
@@ -47,18 +47,14 @@ The columns are pretty self-explanatory based on the column names but here are s
 ## ✏️ Case Study Questions and solutions
 
 
-# 🧴🧼 A. Data Cleansing Steps
-In a single query, perform the following operations and generate a new table in the data_mart schema named clean_weekly_sales:
+## 🧴🧼 A. Data Cleansing Steps
+In a single query, perform the following operations and generate a new table in the data_mart schema named `clean_weekly_sales`:
 
-Convert the week_date to a DATE format
-
-Add a` week_number` as the second column for each week_date value, for example any value from the 1st of January to 7th of January will be 1, 8th to 14th will be 2 etc
-
-Add a `month_number` with the calendar month for each week_date value as the 3rd column
-
-Add a `calendar_year` column as the 4th column containing either 2018, 2019 or 2020 values
-
-Add a new column called `age_band` after the original segment column using the following mapping on the number inside the segment value
+* Convert the week_date to a `DATE` format.
+* Add a` week_number` as the second column for each week_date value, for example any value from the 1st of January to 7th of January will be 1, 8th to 14th will be   2 etc.
+* Add a `month_number` with the calendar month for each week_date value as the 3rd column.
+* Add a `calendar_year` column as the 4th column containing either 2018, 2019 or 2020 values.
+* Add a new column called `age_band` after the original segment column using the following mapping on the number inside the segment value
 
 | segment | age-band |
 |----------|---------|
@@ -66,18 +62,15 @@ Add a new column called `age_band` after the original segment column using the f
 | 2  |  middle aged |
 | 3 or 4 | retirees |
 
-
-Add a new `demographic` column using the following mapping for the first letter in the segment values:
+* Add a new `demographic` column using the following mapping for the first letter in the segment values:
 
 | segment  | demographic |
 |----------|--------------|
  | C | couples|
  | F | families |
  
-
-Ensure all `null string` values with an "unknown" string value in the original `segment` column as well as the new `age_band` and `demographic` columns
-
-Generate a new `avg_transaction` column as the sales value divided by transactions rounded to 2 decimal places for each record.
+* Ensure all `null string` values with an "unknown" string value in the original `segment` column as well as the new `age_band` and `demographic` columns
+* Generate a new `avg_transaction` column as the sales value divided by transactions rounded to 2 decimal places for each record.
 
 
 ## solution
@@ -127,7 +120,9 @@ CREATE TEMP TABLE 'clean_weekly_sales' AS (
    FROM  data_mart.weekly_sales
 );
 ```
- 
+![image](https://github.com/akansha1104/8-weeks-SQL-challenges/assets/94058322/770bb249-992d-4b13-94d6-3a355b74d910)
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------ 
 
 
 
@@ -174,7 +169,7 @@ Answer:
 |37|
 |41|
 
-### * The dataset is missing a total of 28 `week_number` records.
+ The dataset is missing a total of 28 `week_number` records.
 
 
 Q3. How many total transactions were there for each year in the dataset?
@@ -336,6 +331,7 @@ ORDER BY calendar_year, platform;
 Answer:
 
 |calendar_year|	platform	|avg_transaction_row	|avg_transaction_group|
+|----------|--------|----------|---------|
 |2018|	Retail|	43	|36|
 |2018	|Shopify|	188	|192|
 |2019|	Retail|	42|	36|
@@ -348,31 +344,239 @@ The difference between `avg_transaction_row` and `avg_transaction_group` is as f
 avg_transaction_row calculates the average transaction size by dividing the sales of each row by the number of transactions in that row.
 On the other hand, avg_transaction_group calculates the average transaction size by dividing the total sales for the entire dataset by the total number of transactions.
 For finding the average transaction size for each year by platform accurately, it is recommended to use `avg_transaction_group`.
-
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## 💡 C. Before & After Analysis
 This technique is usually used when we inspect an important event and want to inspect the impact before and after a certain point in time.
 
 Taking the week_date value of `2020-06-15` as the baseline week where the Data Mart sustainable packaging changes came into effect.
-
-We would include all week_date values for 2020-06-15 as the start of the period `after` the change and the previous week_date values would be` before`
+We would include all week_date values for 2020-06-15 as the start of the period `after` the change and the previous week_date values would be` before`.
 
 Using this analysis approach - answer the following questions:
 
-* What is the total sales for the 4 weeks before and after 2020-06-15? What is the growth or reduction rate in actual values and percentage of sales?
-* What about the entire 12 weeks before and after?
-* How do the sale metrics for these 2 periods before and after compare with the previous years in 2018 and 2019?
+1. What is the total sales for the 4 weeks before and after 2020-06-15? What is the growth or reduction rate in actual values and percentage of sales?
 
+Before calculating the sales for 4 weeks before and after `2020-06-15` , we need to find out the week_number of this date to use it as filter in our analysis.
+```sql
+SELECT DISTINCT week_number
+FROM clean_weekly_sales
+WHERE week_date = '2020-06-15'
+AND calender_year = '2020';
+```
+|week_number|
+|------------|
+|25|
 
+The week_number of given date is` 25`. Now I created 2 CTEs.
+* CTE 1 - to filter the dataset for 4 weeks before and after 2020-06-15 and then claculate the sum of total sales for this period.
+* CTE 2 - use `case` statement to filter out the total sales before and after 2020-06-15 specifically for these periods.
+
+```sql
+WITH cte1 AS (
+               SELECT  week_number, week_date ,
+                      SUM( sales) AS total_sales
+               FROM clean_weekly_sales
+               WHERE (week_number BETWEEN 21 AND 28)
+               AND (calendar_year = 2020)
+               GROUP BY week_number, week_date
+) ,
+   cte2 AS (
+             SELECT 
+                 SUM( CASE 
+                         WHEN week_number BETWEEN 21 AND 24 THEN total_sales END ) AS sales_before,
+                 SUM(CASE 
+                         WHEN week_number BETWEEN 25 AND 28 THEN total_sales END ) AS sales_after,
+              FROM cte1
+)
+   SELECT sales_after - sales_before AS sales_variance
+   ROUND (100* 
+          ( after_sales - before_sales) / before_sales , 2 ) AS percentage_variance
+   FROM cte2 ;
+```
+
+ Answer:
+
+|sales_variance|	variance_percentage|
+|----------|----------|
+|-26884188|	-1.15|
+
+Since the implementation of new sustainable packaging practices , there has been a decrease in sales amounting to $26,884,188 reflecting a negative change by 1.15%. Introducing new packaging not always guarantee a positive impact as customers may not recognise the products on shelves in supermarkets due to change in packaging.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------                      
+2. What about the entire 12 weeks before and after? 
+In this question we can apply similar approach as in the earlier question. Here instead of 4 weeks before and after, we have to calculate sales for 12 weeks before and after.
+
+```sql
+WITH cte1 AS (
+              SELECT week_date ,
+                    week_number,
+                    SUM(sales ) AS total_sales
+                    FROM clean_weekly_sales
+                    WHERE (week_number BETWEEN 13 AND 37)
+                    AND calender_year = 2020)
+                    GROUP BY week_date, week_number
+ ) , cte2 AS (
+               SELECT 
+                   SUM ( CASE 
+                           WHEN week_number BETWEEN 13 AND 24 THEN total_sales END) AS before_packaging_sales
+                   SUM ( CASE 
+                           WHEN week_number BETWEEN 25 AND 37 THEN total_sales END) AS after_packaging_sales
+                FROM cte1
+  )
+     SELECT (after_packaging_sales - before_packaging_sales) AS sales_variance
+     ROUND ( 100*
+              (after_packaging_sales - before_packaging_sales) / before_packaging_sales , 2 ) AS percentage_variance
+      FROM cte2;
+  ```
+  Answer:
+
+|sales_variance|	variance_percentage|
+|-----------|-----------|
+|-152325394	|-2.14|
+
+It seems like sales have further declined now at negative 2.14% !! This sustainable packaging idea doesnt sounds good for datamart customers and Danny too!!
+------------------------------------------------------------------------------------------------------------------------------------------------------------------  
+3 How do the sale metrics for these 2 periods before and after compare with the previous years in 2018 and 2019?
+
+I'm breaking down this question in two parts.
+
+Part 1. How do the sale metrics for 4 weeks before and after compare with the previous years in 2018 and 2019?
+* Basically, the question is asking us to find the sales variance between 4 weeks before and after '2020-06-15' for years 2018, 2019 and 2020. Perhaps we can find   a pattern here.
+* We can apply the same solution as above and add `calendar_year` into the syntax.
+```sql
+WITH changes AS (
+  SELECT 
+    calendar_year,
+    week_number, 
+    SUM(sales) AS total_sales
+  FROM clean_weekly_sales
+  WHERE week_number BETWEEN 21 AND 28
+  GROUP BY calendar_year, week_number
+)
+, before_after_changes AS (
+  SELECT 
+    calendar_year,
+    SUM(CASE 
+      WHEN week_number BETWEEN 13 AND 24 THEN total_sales END) AS before_packaging_sales,
+    SUM(CASE 
+      WHEN week_number BETWEEN 25 AND 28 THEN total_sales END) AS after_packaging_sales
+  FROM changes
+  GROUP BY calendar_year
+)
+
+SELECT 
+  calendar_year, 
+  after_packaging_sales - before_packaging_sales AS sales_variance, 
+  ROUND(100 * 
+    (after_packaging_sales - before_packaging_sales) 
+    / before_packaging_sales,2) AS variance_percentage
+FROM before_after_changes;
+```
+
+Answer:
+
+|calendar_year|	sales_variance|	variance_percentage|
+|-------|--------|--------|
+|2018|	4102105|	0.19|
+|2019	|2336594|	0.10|
+|2020	|-26884188	|-1.15|
+
+In 2018, there was a sales variance of $4,102,105, indicating a positive change of 0.19% compared to the period before the packaging change.
+
+Similarly, in 2019, there was a sales variance of $2,336,594, corresponding to a positive change of 0.10% when comparing the period before and after the packaging change.
+
+However, in 2020, there was a substantial decrease in sales due to  the packaging change. The sales variance amounted to $26,884,188, indicating a significant negative change of -1.15%. This reduction represents a considerable drop compared to the previous years.
+
+Part 2: How do the sale metrics for 12 weeks before and after compare with the previous years in 2018 and 2019?
+
+Use the same solution above and change to week 13 to 24 for before and week 25 to 37 for after.
+```sql
+WITH changes AS (
+  SELECT 
+    calendar_year, 
+    week_number, 
+    SUM(sales) AS total_sales
+  FROM clean_weekly_sales
+  WHERE week_number BETWEEN 13 AND 37
+  GROUP BY calendar_year, week_number
+)
+, before_after_changes AS (
+  SELECT 
+    calendar_year,
+    SUM(CASE 
+      WHEN week_number BETWEEN 13 AND 24 THEN total_sales END) AS before_packaging_sales,
+    SUM(CASE 
+      WHEN week_number BETWEEN 25 AND 37 THEN total_sales END) AS after_packaging_sales
+  FROM changes
+  GROUP BY calendar_year
+)
+
+SELECT 
+  calendar_year, 
+  after_packaging_sales - before_packaging_sales AS sales_variance, 
+  ROUND(100 * 
+    (after_packaging_sales - before_packaging_sales) 
+    / before_packaging_sales,2) AS variance_percentage
+FROM before_after_changes;
+```
+Answer:
+
+|calendar_year|	sales_variance	|variance_percentage|
+|--------|--------|--------|
+|2018	|104256193|	1.63|
+|2019	|-20740294	|-0.30|
+|2020	|-152325394|	-2.14|
+
+There was a fair bit of percentage differences in all 3 years. However, now when you compare the worst year to their best year in 2018, the sales percentage difference is even more stark at a difference of 3.77% (1.63% + 2.14%).
+
+When comparing the sales performance across all three years, there were noticeable variations in the percentage differences. However, the most significant contrast emerges when comparing the worst-performing year in 2020 to the best-performing year in 2018.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## 🎁 D. Bonus Question
-Which areas of the business have the highest negative impact in sales metrics performance in 2020 for the 12 week before and after period?
 
+Which areas of the business have the highest negative impact in sales metrics performance in 2020 for the 12 week before and after period?
 `region`
 `platform`
 `age_band`
 `demographic`
 `customer_type`
+
+For this question we have to apply the same logic for 12 weeks before and after, this time we have to group the results by region, platform, age_band , demographic and customer_type seperately for year 2020. So I am breaking this question in 5 parts.
+
+Part 1 :  How do the sale metrics performance in 2020  have impacted `region` for 12 weeks before and after ? 
+
+```sql
+WITH packaging_sales AS (
+  SELECT 
+    week_date, 
+    week_number,
+    region,
+    SUM(sales) AS total_sales
+  FROM clean_weekly_sales
+  WHERE (week_number BETWEEN 13 AND 37) 
+    AND (calendar_year = 2020)
+  GROUP BY week_date, week_number, region
+)
+, before_after_changes AS (
+  SELECT 
+    SUM(CASE 
+      WHEN week_number BETWEEN 13 AND 24 THEN total_sales END) AS before_packaging_sales,
+    SUM(CASE 
+      WHEN week_number BETWEEN 25 AND 37 THEN total_sales END) AS after_packaging_sales
+  FROM packaging_sales
+)
+
+SELECT 
+  after_packaging_sales - before_packaging_sales AS sales_variance, 
+  ROUND(100 * 
+    (after_packaging_sales - before_packaging_sales) / before_packaging_sales,2) AS variance_percentage
+FROM before_after_changes;
+```
+
+Part 2 :  How do the sale metrics performance in 2020  have impacted `platform` for 12 weeks before and after ? 
+
+solution for this question will be uploaded soon...!!
+
+
 
  
 
