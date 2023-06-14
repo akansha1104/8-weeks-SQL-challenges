@@ -12,7 +12,7 @@
 
 # 📚 Table Of Contents
 
-* [Business Task](https://github.com/akansha1104/8-weeks-SQL-challenges/tree/main/Data%20Mart#-business-task)
+* [Introduction and Problem Statement](https://github.com/akansha1104/8-weeks-SQL-challenges/tree/main/Data%20Mart#-business-task)
 * [Dataset Used](https://github.com/akansha1104/8-weeks-SQL-challenges/tree/main/Data%20Mart#%EF%B8%8F-dataset-used)
 * [Case Study Questions and Solutions](https://github.com/akansha1104/8-weeks-SQL-challenges/tree/main/Data%20Mart#-a-data-cleansing-steps)
 
@@ -38,10 +38,6 @@ For this case study there is only a single table: data_mart.weekly_sales
 
 The columns are pretty self-explanatory based on the column names but here are some further details about the dataset:
 
-* Data Mart has international operations using a multi-`region` strategy.
-* Data Mart has both, a `retail` and online platform in the form of a ` Shopify` store front to serve their customers.
-* Customer `segment` and `customer_type` data relates to personal age and demographics information that is shared with Data Mart.
-* `Transactions` is the count of unique purchases made through Data Mart and `sales` is the actual dollar amount of purchases.
 
 
 ## ✏️ Case Study Questions and solutions
@@ -145,33 +141,11 @@ FROM clean_weekly_sales;
 
 Q2. What range of week numbers are missing from the dataset?
 
-* First, generate a range of week numbers for the entire year from 1st week to the 52nd week using the GENERATE_SERIES() function.
-* Then, perform a LEFT JOIN with the clean_weekly_sales. Ensure that the join sequence is the CTE followed by the clean_weekly_sales as reversing the sequence      would result in null results (unless you opt for a RIGHT JOIN instead!).
-
-```sql 
-WITH cte AS (
-  SELECT GENERATE_SERIES(1,52) AS week_number
-)
-  
-SELECT DISTINCT w.week_number
-FROM cte  w
-LEFT JOIN clean_weekly_sales s
-ON w.week_number = s.week_number
-WHERE s.week_number IS NULL; -- Filter to identify the missing week numbers where the values are `NULL`.
-```
-Answer:
-*I'm posting only the results of 5 rows here. Ensure that you have retrieved 28 rows!
 
 
-|week_number|
-|-----------|
-|1|
-|2|
-|3|
-|37|
-|41|
 
- The dataset is missing a total of 28 `week_number` records.
+
+
 
 
 Q3. How many total transactions were there for each year in the dataset?
@@ -202,35 +176,20 @@ FROM clean_weekly_sales
 GROUP BY month_number, region
 ORDER BY month_number, region;
 ```
-Answer:
 
-I'm only showing the results for the month of March.
-
-|month_number|	region|	total_sales|
-|---------|---------|----------|
-|3|	AFRICA|	567767480|
-|3	|ASIA	|529770793|
-|3	|CANADA|	144634329|
-|3	|EUROPE|	35337093|
-|3|	OCEANIA	|783282888|
-|3|	SOUTH AMERICA	|71023109|
-|3	|USA	|225353043|
 
 Q5. What is the total count of transactions for each platform
 
 ```sql
 SELECT platform, 
-       SUM(transactions) AS total_transactions
+       COUNT(transactions) AS total_transactions
 FROM clean_weekly_sales
 GROUP BY platform;
 ```
 
 Answer:
 
-|platform|	total_transactions|
-|---------|---------|
-|Retail|	1081934227|
-|Shopify|	5925169|
+
 
 
 Q6. What is the percentage of sales for Retail vs Shopify for each month?
@@ -246,33 +205,11 @@ WITH monthly_transactions AS (
 )
 
 SELECT 
-  calendar_year, 
-  month_number, 
-  ROUND(100 * MAX 
-        (CASE 
-         WHEN platform = 'Retail' THEN monthly_sales ELSE NULL END) 
-         / SUM(monthly_sales),2 ) AS retail_percentage,
-  ROUND(100 * MAX 
-        (CASE 
-         WHEN platform = 'Shopify' THEN monthly_sales ELSE NULL END)
-         / SUM(monthly_sales),2 ) AS shopify_percentage
-FROM monthly_transactions
-GROUP BY calendar_year, month_number
-ORDER BY calendar_year, month_number;
+  
 ```
 Answer:
 
-*Although I am only displaying the rows for the year 2018, please note that the overall results consist of 20 rows.
 
-|calendar_year|	month_number|	retail_percentage|	shopify_percentage|
-|---------|----------|---------|-----------|
-|2018|	3|	97.92|	2.08|
-|2018|	4	|97.93|	2.07|
-|2018|	5	|97.73|	2.27|
-|2018	|6|	97.76|	2.24|
-|2018	|7	|97.75|	2.25|
-|2018	|8	|97.71	|2.29|
-|2018|	9	|97.68|	2.32|
 
 
 Q7.What is the percentage of sales by demographic for each year in the dataset?
@@ -297,42 +234,35 @@ Q8.Which age_band and demographic values contribute the most to Retail sales?
 ```sql
 SELECT age_band, 
        demographic, 
-       SUM(sales) AS retail_sales,
-       ROUND(100 * 
-            SUM(sales) / SUM(SUM(sales)) OVER (),1) AS contribution_percentage
+       SUM(sales) AS total_sales
 FROM clean_weekly_sales
-WHERE platform = 'Retail'
-GROUP BY age_band, demographic
-ORDER BY retail_sales DESC;
+WHERE platform = 'retail'
+GROUP BY age_band , demographic
+ORDER BY total_sales DESC;
 ```
 Answer:
 
-|age_band	|demographic|	retail_sales|	contribution_percentage|
-|-------|---------|--------|--------|
-|unknown|	unknown|	16067285533|	40.5|
-|Retirees|	Families|	6634686916|	16.7|
-|Retirees|	Couples|	6370580014	|16.1|
-|Middle Aged|	Families	|4354091554|	11.0|
-|Young Adults|	Couples	|2602922797	|6.6|
-|Middle Aged|	Couples	|1854160330|	4.7|
-|Young Adults|	Families|	1770889293	|4.5|
+|age_band	|demographic|	total_sales|
+|-------|---------|--------|
+|unknown|	unknown|	16067285533|	
+|Retirees|	Families|	66346869
 
-The majority of the highest retail sales accounting for `41%` are contributed by `unknown` age_band and demographic. This is followed by retired families at `16.73% `and retired couples at` 16.07%`.
+The majority of the highest retail sales are contributed by 'unkown' age_band and 'unknown' demographic .
 
 Q9.Can we use the avg_transaction column to find the average transaction size for each year for Retail vs Shopify? If not - how would you calculate it instead?
 
 ```sql
 SELECT  calendar_year, 
         platform, 
-        ROUND(AVG(avg_transaction),0) AS avg_transaction_row, 
-        SUM(sales) / SUM(transactions) AS avg_transaction_group
+        ROUND(AVG(avg_transaction),0) AS avg_transaction_column, 
+        SUM(sales) / SUM(transactions) AS avg_transaction
 FROM clean_weekly_sales
 GROUP BY calendar_year, platform
 ORDER BY calendar_year, platform;
 ```
 Answer:
 
-|calendar_year|	platform	|avg_transaction_row	|avg_transaction_group|
+|calendar_year|	platform	|avg_transaction_column	|avg_transaction|
 |----------|--------|----------|---------|
 |2018|	Retail|	43	|36|
 |2018	|Shopify|	188	|192|
@@ -341,11 +271,8 @@ Answer:
 |2020|	Retail|	41|	36|
 |2020|	Shopify|	175	|179|
 
-The difference between `avg_transaction_row` and `avg_transaction_group` is as follows:
 
-avg_transaction_row calculates the average transaction size by dividing the sales of each row by the number of transactions in that row.
-On the other hand, avg_transaction_group calculates the average transaction size by dividing the total sales for the entire dataset by the total number of transactions.
-For finding the average transaction size for each year by platform accurately, it is recommended to use `avg_transaction_group`.
+For finding the average transaction size for each year by platform accurately, it is recommended to use `avg_transaction`.
 
 ------
 
@@ -391,7 +318,7 @@ WITH cte1 AS (
                          WHEN week_number BETWEEN 25 AND 28 THEN total_sales END ) AS sales_after,
               FROM cte1
 )
-   SELECT sales_after - sales_before AS sales_variance
+   SELECT (sales_after - sales_before) AS sales_variance
    ROUND (100* 
           ( after_sales - before_sales) / before_sales , 2 ) AS percentage_variance
    FROM cte2 ;
@@ -442,13 +369,13 @@ It seems like sales have further declined now at negative 2.14% !! This sustaina
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 3 How do the sale metrics for these 2 periods before and after compare with the previous years in 2018 and 2019?
 
-I'm breaking down this question in two parts.
+I'm dividing  this question in two parts --
 
 Part 1. How do the sale metrics for 4 weeks before and after compare with the previous years in 2018 and 2019?
-* Basically, the question is asking us to find the sales variance between 4 weeks before and after '2020-06-15' for years 2018, 2019 and 2020. Perhaps we can find   a pattern here.
-* We can apply the same solution as above and add `calendar_year` into the syntax.
+* Here,  the question is asking us to find the sales variance between 4 weeks before and after '2020-06-15' for years 2018, 2019 and 2020. 
+* We can apply the same solution as above and add `calendar_year` and group by the results with `calendar_year` to get the sales variance for 2018, 2019 along with 2020.
 ```sql
-WITH changes AS (
+WITH cte1 AS (
   SELECT 
     calendar_year,
     week_number, 
@@ -457,14 +384,14 @@ WITH changes AS (
   WHERE week_number BETWEEN 21 AND 28
   GROUP BY calendar_year, week_number
 )
-, before_after_changes AS (
+, cte2 AS (
   SELECT 
     calendar_year,
     SUM(CASE 
       WHEN week_number BETWEEN 13 AND 24 THEN total_sales END) AS before_packaging_sales,
     SUM(CASE 
       WHEN week_number BETWEEN 25 AND 28 THEN total_sales END) AS after_packaging_sales
-  FROM changes
+  FROM cte1
   GROUP BY calendar_year
 )
 
@@ -474,7 +401,7 @@ SELECT
   ROUND(100 * 
     (after_packaging_sales - before_packaging_sales) 
     / before_packaging_sales,2) AS variance_percentage
-FROM before_after_changes;
+FROM cte2;
 ```
 
 Answer:
@@ -485,17 +412,18 @@ Answer:
 |2019	|2336594|	0.10|
 |2020	|-26884188	|-1.15|
 
-In 2018, there was a sales variance of $4,102,105, indicating a positive change of 0.19% compared to the period before the packaging change.
+In 2018, there was a sales variance of $4,102,105, with a positive variance of 0.19% indicating that sales have increased after the change period.
+similarly, for 2019 , the sales variance is $2336594 with variance as 0.10% also indicating postive results after change period.
 
-Similarly, in 2019, there was a sales variance of $2,336,594, corresponding to a positive change of 0.10% when comparing the period before and after the packaging change.
-
-However, in 2020, there was a substantial decrease in sales due to  the packaging change. The sales variance amounted to $26,884,188, indicating a significant negative change of -1.15%. This reduction represents a considerable drop compared to the previous years.
+However, looking at results of 2020, there was negative sales variance of 1.15% amounting to $26884188, which shows that there was decrease in sales after the new sustainable packaging idea was introduced. It seems that this new packaging was not a good idea for customers and Danny too. 
+These types of changes like , changing the packaging of products , does not always bring positive results as may be it becomes difficult for customers to recognise the products on the shelves of mart and purchase some other brand products of same category.
 
 Part 2: How do the sale metrics for 12 weeks before and after compare with the previous years in 2018 and 2019?
 
-Use the same solution above and change to week 13 to 24 for before and week 25 to 37 for after.
+For this part of question we will use the same logic as above introducing calendar_year and group by the results with it. The only difference is now the weeks will be from 13 to 24 for before period and week 25 to 37 for after period.
+
 ```sql
-WITH changes AS (
+WITH cte1 AS (
   SELECT 
     calendar_year, 
     week_number, 
@@ -504,14 +432,14 @@ WITH changes AS (
   WHERE week_number BETWEEN 13 AND 37
   GROUP BY calendar_year, week_number
 )
-, before_after_changes AS (
+, cte2 AS (
   SELECT 
     calendar_year,
     SUM(CASE 
       WHEN week_number BETWEEN 13 AND 24 THEN total_sales END) AS before_packaging_sales,
     SUM(CASE 
       WHEN week_number BETWEEN 25 AND 37 THEN total_sales END) AS after_packaging_sales
-  FROM changes
+  FROM cte1
   GROUP BY calendar_year
 )
 
@@ -521,7 +449,7 @@ SELECT
   ROUND(100 * 
     (after_packaging_sales - before_packaging_sales) 
     / before_packaging_sales,2) AS variance_percentage
-FROM before_after_changes;
+FROM cte2;
 ```
 Answer:
 
@@ -531,9 +459,8 @@ Answer:
 |2019	|-20740294	|-0.30|
 |2020	|-152325394|	-2.14|
 
-There was a fair bit of percentage differences in all 3 years. However, now when you compare the worst year to their best year in 2018, the sales percentage difference is even more stark at a difference of 3.77% (1.63% + 2.14%).
-
-When comparing the sales performance across all three years, there were noticeable variations in the percentage differences. However, the most significant contrast emerges when comparing the worst-performing year in 2020 to the best-performing year in 2018.
+Now here , comparing the sales performance for all three years ,  2020 comes out to be the worst year and 2018 to be best among them. The sales variance for both 2019 and 2020 shows negative results indicating that sales have decreased 12 weeks before and after period for these years. After the introduction of sustainable packaging idea the sales in year 2020 substantially decreased by 2.14% amounting to $152,325,394 which is a huge loss for datamart.
+``Danny needs to hire a good `data analyst` who can analyse the sales performance and come up with new ideas to increase the sales of datamart.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
