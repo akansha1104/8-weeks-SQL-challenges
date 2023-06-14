@@ -318,11 +318,11 @@ WITH cte1 AS (
 
  Answer:
 
-|sales_variance|	variance_percentage|
+|sales_variance|	percentage_variance|
 |----------|----------|
 |-26884188|	-1.15|
 
-Since the implementation of new sustainable packaging practices , there has been a decrease in sales amounting to $26,884,188 reflecting a negative change by 1.15%. Introducing new packaging not always guarantee a positive impact as customers may not recognise the products on shelves in supermarkets due to change in packaging.
+Since the new sustainable packaging has been introduced , there has been a decrease in sales amounting to $26,884,188 reflecting a negative change by 1.15%. Introducing new packaging not always results a positive change, as customers may not recognise the products on shelves in supermarkets due to change in packaging.
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------                      
 2. What about the entire 12 weeks before and after? 
@@ -452,7 +452,7 @@ Answer:
 |2020	|-152325394|	-2.14|
 
 Now here , comparing the sales performance for all three years ,  2020 comes out to be the worst year and 2018 to be best among them. The sales variance for both 2019 and 2020 shows negative results indicating that sales have decreased 12 weeks before and after period for these years. After the introduction of sustainable packaging idea the sales in year 2020 substantially decreased by 2.14% amounting to $152,325,394 which is a huge loss for datamart.
-``Danny needs to hire a good `data analyst` who can analyse the sales performance and come up with new ideas to increase the sales of datamart.
+`Danny` needs to hire a good `data analyst` who can analyse the sales performance and come up with new ideas to increase the sales of datamart.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
