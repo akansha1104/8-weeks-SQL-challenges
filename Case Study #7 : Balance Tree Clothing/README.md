@@ -5,19 +5,18 @@
 <img align= "center" alt= "logo" width= "400" src= "https://8weeksqlchallenge.com/images/case-study-designs/7.png">
 
 
-* Note : All the details regarding case study and questions are sourced from [here](https://8weeksqlchallenge.com/case-study-7/)
+* Note : For all the details regarding  dataset, case study and questions click [here](https://8weeksqlchallenge.com/case-study-7/)
 
 
 
 ## 📚 Table Of Contents
 
-* [Business Task]()
-* [Dataset Used]()
+* [Introduction and Problem Statement]()
 * [Case study Questions and Solutions]()
 
 
 
-## 📩 Business Task
+## 📩 Introduction and Problem Statement
 
 Balanced Tree is a company that provides optimised range of clothing and lifestyle wear for modern world adventurer. :jeans:
 
@@ -25,22 +24,6 @@ Balanced Tree is a company that provides optimised range of clothing and lifesty
 Danny, the CEO of this trendy fashion company has asked you to assist the team’s merchandising teams analyse their sales performance and
 generate a basic financial report to share with the wider business.
 
-
-
-## 🗞️ Dataset Used
-
-For this case study there is a total of 4 datasets for this case study. 
-however you will only need to utilise 2 main tables to solve all of the regular questions, and the additional 2 tables are used only for
-the bonus challenge question!
-
-Table 1: `Product Details` includes all information about the entire range that Balanced Clothing sells in their store.
-
-Table 2: `Product Sales` contains product level information for all the transactions made for Balanced Tree including quantity, price,
-          percentage discount, member status, a transaction ID and also the transaction timestamp.
-
-Table 3: `Product Hierarcy `
-
-Table 4: `Product prices` contains all details of product price and product id.
 
 
 ## 🧩 Case Study Questions And Solutions
