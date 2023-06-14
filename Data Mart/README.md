@@ -5,7 +5,7 @@
 <img align= "center" alt= "logo" width= "400" src= "https://8weeksqlchallenge.com/images/case-study-designs/5.png">
 
 
-*  Note that all the information regarding dataset and case study is sourced from [here](https://8weeksqlchallenge.com/case-study-5/)
+*  Note that to get the dataset click [here](https://8weeksqlchallenge.com/case-study-5/)
 
 
 
@@ -13,12 +13,11 @@
 # 📚 Table Of Contents
 
 * [Introduction and Problem Statement](https://github.com/akansha1104/8-weeks-SQL-challenges/tree/main/Data%20Mart#-business-task)
-* [Dataset Used](https://github.com/akansha1104/8-weeks-SQL-challenges/tree/main/Data%20Mart#%EF%B8%8F-dataset-used)
 * [Case Study Questions and Solutions](https://github.com/akansha1104/8-weeks-SQL-challenges/tree/main/Data%20Mart#-a-data-cleansing-steps)
 
 
 
- ## 📩 Business Task
+ ## 🏠 Introduction and Problem Statement
  
  Danny embarked upon a new venture of online supermarket that specialises in  fresh produce and is named as DATA MART. After running international operations for his online supermarket, Danny is asking for support to analyse his sales performance. 
 In June 2020 - large scale supply changes were made at Data Mart. All Data Mart products now use sustainable packaging methods in every single step from the farm all the way to the customer.
@@ -29,14 +28,7 @@ The key business question to be answered are following--
 
 * What was the quantifiable impact of the changes introduced in June 2020?
 * Which platform, region, segment and customer types were the most impacted by this change?
-* What can we do about future introduction of similar sustainability updates to the business to minimise impact on sales?
-
-
-
-## 🗞️ Dataset Used
-For this case study there is only a single table: data_mart.weekly_sales
-
-The columns are pretty self-explanatory based on the column names but here are some further details about the dataset:
+* What can we do about future introduction of similar sustainability updates to the business to minimise impact on sales
 
 
 
