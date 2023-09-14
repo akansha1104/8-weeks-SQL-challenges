@@ -26,7 +26,44 @@ also which menu items are their favourite. He plans on using these insights to h
 ## Case Study Questions and Solutions
 
 Q1. What is the total amount each customer spent at the restaurant?
+
+```sql
+ SELECT s.customer_id , 
+        SUM ( m.price) AS total_amt_spent
+ FROM dannys_diner.sales s
+ JOIN dannys_diner.menu m
+ USING (product_id)
+ GROUP BY s.customer_id ;
+```
+
+## Answer :
+
+|customer_id |total_amt_spent|
+|-------|--------|
+|B|	74|
+|C|	36|
+|A|	76|
+
+
+
 Q2. How many days has each customer visited the restaurant?
+
+```sql
+
+SELECT customer_id , 
+      COUNT (DISTINCT order_date ) AS no_of_days
+FROM dannys_diner.sales
+GROUP BY customer_id ;
+```
+
+## Answer
+|customer_id|	no_of_days|
+|------|-------|
+|A	|4|
+|B|	6|
+|C|	2|
+
+
 Q3. What was the first item from the menu purchased by each customer?
 Q4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 Q5. Which item was the most popular for each customer?
