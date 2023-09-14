@@ -65,6 +65,29 @@ GROUP BY customer_id ;
 
 
 Q3. What was the first item from the menu purchased by each customer?
+
+```sql
+WITH first_item AS (
+  					SELECT s.customer_id , m.product_name,
+  						     	DENSE_RANK()OVER( PARTITION BY s.customer_id ORDER BY s.order_date) AS rnk
+  					FROM dannys_diner.sales s 
+  					JOIN dannys_diner.menu m
+  					USING (product_id)
+  )
+  	 SELECT customer_id , STRING_AGG(product_name , ' ,') AS first_items_purchased
+    FROM first_item
+    WHERE rnk = 1
+    GROUP BY customer_id;
+```
+## Answer
+
+|customer_id|	first_items_purchased|
+|------|--------|
+|A|	curry ,sushi|
+|B|	curry|
+|C	|ramen |
+
+
 Q4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 Q5. Which item was the most popular for each customer?
 Q6. Which item was purchased first by the customer after they became a member?
