@@ -22,8 +22,10 @@ of operation but have no idea how to use their data to help them run the busines
 Danny wants to use the data to answer a few simple questions about his customers, especially about their visiting patterns, how much money they’ve spent and
 also which menu items are their favourite. He plans on using these insights to help him decide whether he should expand the existing customer loyalty program.
 
+-----------------------------------------------------------
 
-## Case Study Questions and Solutions
+
+##✏️ Case Study Questions and Solutions
 
 ### Q1. What is the total amount each customer spent at the restaurant?
 
@@ -48,6 +50,8 @@ Customer A spent 76$
 Customer B spent 74$
 Customer C spent 36$
 
+---------------------------------------------------------------
+
 
 
 ### Q2. How many days has each customer visited the restaurant?
@@ -68,8 +72,14 @@ GROUP BY customer_id ;
 |C|	2|
 
 Customer A visited 4 times.
+
 Customer B visited 6 times. 
+
 Customer C visited 2 times.
+
+
+
+------------------------------------------------------------
 
 
 ### Q3. What was the first item from the menu purchased by each customer?
@@ -87,6 +97,8 @@ WITH first_item AS (
     WHERE rnk = 1
     GROUP BY customer_id;
 ```
+
+
 ### Answer
 
 |customer_id|	first_items_purchased|
@@ -94,6 +106,9 @@ WITH first_item AS (
 |A|	curry ,sushi|
 |B|	curry|
 |C	|ramen |
+
+
+------------------------------------------------------------------------------------
 
 
 ### Q4. What is the most purchased item on the menu and how many times was it purchased by all customers?
@@ -115,7 +130,11 @@ LIMIT 1;
 |-------|-------|
 |ramen|	8|
 
-Most popular item amaong customers is RAMEN 🍜,  as it was purchased 8 times!!! That ramen must be yummy!!
+
+
+*Most popular item among customers is` RAMEN `🍜,  as it was purchased 8 times!!! That ramen must be YUMMY!!*
+
+----------------------------------------------------------------
 
 
 ### Q5. Which item was the most popular for each customer?
@@ -135,7 +154,10 @@ WITH popular_item AS (
     GROUP BY customer_id;
 ```
 
+
+
 ### Answer
+
 
 |customer_id	|products_purchased|
 |-------|-------|
@@ -143,10 +165,20 @@ WITH popular_item AS (
 |B	|ramen ,curry ,sushi|
 |C|	ramen|
 
-Customer A and B loved ramen, while customer B seems to enjoy all the three dishes on menu... true foodie|||
+
+
+
+*Customer A and B loved ramen, while customer B seems to enjoy all the three dishes on menu... TRUE FOODIE🍛|||*
+
+
+---------------------------------------------------------------------------
+
+
 
 
 ### Q6. Which item was purchased first by the customer after they became a member?
+
+
 
 ```sql
 WITH first_purchased_item AS ( 
@@ -166,6 +198,8 @@ WITH first_purchased_item AS (
     GROUP BY customer_id;
 ```
 
+
+
 ### Answer
 
 |customer_id|	first_purchased_items|
@@ -173,10 +207,19 @@ WITH first_purchased_item AS (
 |A|	ramen|
 |B|	sushi|
 
-After becoming members customer A ordered ramen🍜 , while customer B ordered sushi🍣...!!!
+
+
+*After becoming members customer A ordered ramen🍜 , while customer B ordered sushi🍣...!!!*
+
+
+-------------------------------------------------------
+
+
 
 
 ### Q7. Which item was purchased just before the customer became a member?
+
+
 
 ```sql
 WITH first_purchased_item AS ( 
@@ -196,7 +239,10 @@ WITH first_purchased_item AS (
     GROUP BY customer_id;
 ```
 
+
+
 ### Answer
+
 
 |customer_id|	first_purchased_items|
 |-------|------|
@@ -204,7 +250,14 @@ WITH first_purchased_item AS (
 |B|	sushi|
 
 
+---------------------------------------------------------------------------------
+
+
+
+
 ### Q8. What is the total items and amount spent for each member before they became a member?
+
+
 
 ```sql
 SELECT s.customer_id , 
@@ -218,7 +271,11 @@ USING (customer_id)
 WHERE s.order_date < mb.join_date;
 ```
 
+
+
 ### Answer
+
+
 
 |customer_id	|no_of_items|	total_amt_spent|
 |-------|-------|-------|
@@ -226,7 +283,14 @@ WHERE s.order_date < mb.join_date;
 |B|	3|	40|
 
 
+--------------------------------------------------------------------------------
+
+
+
+
 ### Q9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+
+
 
 ```sql
 SELECT s.customer_id ,
@@ -240,13 +304,23 @@ GROUP BY s.customer_id
 ORDER BY s.customer_id;
 ```
 
+
+
 ### Answer
+
+
 
 |customer_id	|total_points|
 |-------|-------|
 |A|	860|
 |B|	940|
 |C|	360|
+
+
+-------------------------------------------------------------------------------
+
+
+
 
 
 ### Q10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
