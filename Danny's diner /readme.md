@@ -25,7 +25,7 @@ also which menu items are their favourite. He plans on using these insights to h
 -----------------------------------------------------------
 
 
-##✏️ Case Study Questions and Solutions
+## ✏️ Case Study Questions and Solutions
 
 ### Q1. What is the total amount each customer spent at the restaurant?
 
